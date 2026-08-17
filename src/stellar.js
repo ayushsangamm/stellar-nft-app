@@ -105,10 +105,15 @@ export const isValidAddress = (address) => {
   }
 };
 
-// Format a long Stellar address to short form
+// Format a long Stellar address to short form (first 4 chars + ... + last 4 chars)
+export const truncateAddress = (address) => {
+  if (!address || typeof address !== 'string') return '';
+  if (address.length <= 8) return address;
+  return `${address.slice(0, 4)}...${address.slice(-4)}`;
+};
+
 export const shortAddress = (address) => {
-  if (!address) return '';
-  return `${address.slice(0, 6)}...${address.slice(-6)}`;
+  return truncateAddress(address);
 };
 
 // Format XLM balance
