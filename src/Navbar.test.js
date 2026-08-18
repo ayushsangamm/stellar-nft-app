@@ -60,4 +60,32 @@ describe('Navbar component', () => {
     render(<Navbar walletAddress="" status="Connecting..." />);
     expect(screen.getByText('Connecting...')).toBeInTheDocument();
   });
+
+  test('disables Connect button and shows Connecting... label when connecting is true', () => {
+    const handleConnect = jest.fn();
+    render(<Navbar walletAddress="" connecting={true} connectWallet={handleConnect} />);
+
+    const connectBtn = screen.getByRole('button', { name: /connecting\.\.\./i });
+    expect(connectBtn).toBeInTheDocument();
+    expect(connectBtn).toBeDisabled();
+
+    fireEvent.click(connectBtn);
+    expect(handleConnect).not.toHaveBeenCalled();
+  });
+
+  test('renders install link to freighter website when showInstallLink is true', () => {
+    render(
+      <Navbar
+        walletAddress=""
+        status="Please install Freighter wallet!"
+        showInstallLink={true}
+      />
+    );
+
+    expect(screen.getByText('Please install Freighter wallet!')).toBeInTheDocument();
+    const installLink = screen.getByRole('link', { name: /install freighter/i });
+    expect(installLink).toBeInTheDocument();
+    expect(installLink).toHaveAttribute('href', 'https://www.freighter.app/');
+    expect(installLink).toHaveAttribute('target', '_blank');
+  });
 });

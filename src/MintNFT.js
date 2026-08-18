@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import * as StellarSdk from 'stellar-sdk';
 
-const server = new StellarSdk.Horizon.Server(
-  'https://horizon-testnet.stellar.org'
-);
+
+
 
 function MintNFT({ walletAddress }) {
   const [artName, setArtName] = useState('');
