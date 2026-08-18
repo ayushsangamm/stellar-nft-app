@@ -10,6 +10,8 @@ export const Navbar = ({
   onConnect,
   onDisconnect,
   status,
+  connecting,
+  showInstallLink,
 }) => {
   const handleConnect = connectWallet || onConnect;
   const handleDisconnect = disconnectWallet || onDisconnect;
@@ -37,13 +39,31 @@ export const Navbar = ({
       ) : (
         <button
           onClick={handleConnect}
-          style={styles.walletButton}
-          aria-label="Connect Wallet"
+          style={connecting ? styles.walletButtonDisabled : styles.walletButton}
+          aria-label={connecting ? 'Connecting...' : 'Connect Wallet'}
+          disabled={connecting}
         >
-          🔌 Connect Wallet
+          {connecting ? '⏳ Connecting...' : '🔌 Connect Wallet'}
         </button>
       )}
-      {status && <p style={styles.status}>{status}</p>}
+      {status && (
+        <p style={styles.status}>
+          {status}
+          {showInstallLink && (
+            <>
+              {' '}
+              <a
+                href="https://www.freighter.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styles.installLink}
+              >
+                Install Freighter
+              </a>
+            </>
+          )}
+        </p>
+      )}
     </header>
   );
 };
@@ -101,10 +121,25 @@ const styles = {
     fontSize: '14px',
     cursor: 'pointer',
   },
+  walletButtonDisabled: {
+    backgroundColor: '#4c1d95',
+    color: '#a3a3a3',
+    border: 'none',
+    borderRadius: '8px',
+    padding: '10px 24px',
+    fontSize: '14px',
+    cursor: 'not-allowed',
+    opacity: 0.7,
+  },
   status: {
     color: '#f59e0b',
     fontSize: '13px',
     marginTop: '8px',
+  },
+  installLink: {
+    color: '#a78bfa',
+    textDecoration: 'underline',
+    fontWeight: 'bold',
   },
 };
 
