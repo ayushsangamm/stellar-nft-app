@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import NFTCardSkeleton from './NFTCardSkeleton';
 
 // Sample NFT data (will be replaced with real Stellar data later)
 const sampleNFTs = [
@@ -43,8 +44,14 @@ function Gallery() {
 
   if (loading) {
     return (
-      <div style={styles.loading}>
-        <p>⏳ Loading your NFTs...</p>
+      <div style={styles.container}>
+        <h2 style={styles.title}>🏛️ NFT Gallery</h2>
+        <p style={styles.count}>Loading NFTs…</p>
+        <div style={styles.grid}>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <NFTCardSkeleton key={i} />
+          ))}
+        </div>
       </div>
     );
   }
