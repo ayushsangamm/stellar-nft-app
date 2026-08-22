@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import NFTCardSkeleton from './NFTCardSkeleton';
 
 // Sample NFT data (will be replaced with real Stellar data later)
-const sampleNFTs = [
+export const sampleNFTs = [
   {
     id: 1,
     name: 'Sunset in Lagos',
@@ -29,27 +29,39 @@ const sampleNFTs = [
   },
 ];
 
-function Gallery() {
+const SKELETON_COUNT = 6;
+
+function Gallery({ skeletonCount = SKELETON_COUNT } = {}) {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
     // Simulate loading NFTs from Stellar
-    setTimeout(() => {
-      setNfts(sampleNFTs);
-      setLoading(false);
+    const timer = setTimeout(() => {
+      if (isMounted) {
+        setNfts(sampleNFTs);
+        setLoading(false);
+      }
     }, 1500);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
   }, []);
 
   if (loading) {
     return (
       <div style={styles.container}>
         <h2 style={styles.title}>🏛️ NFT Gallery</h2>
-        <p style={styles.count}>Loading NFTs…</p>
-        <div style={styles.grid}>
-          {Array.from({ length: 8 }).map((_, i) => (
-            <NFTCardSkeleton key={i} />
+        <p style={styles.count}>Loading NFTs...</p>
+
+        {/* Skeleton Loading Grid */}
+        <div style={styles.grid} data-testid="nft-skeleton-grid">
+          {Array.from({ length: skeletonCount }).map((_, index) => (
+            <NFTCardSkeleton key={`skeleton-${index}`} />
           ))}
         </div>
       </div>
@@ -73,12 +85,13 @@ function Gallery() {
       <p style={styles.count}>{nfts.length} NFTs found</p>
 
       {/* NFT Grid */}
-      <div style={styles.grid}>
+      <div style={styles.grid} data-testid="nft-card-grid">
         {nfts.map((nft) => (
           <div
             key={nft.id}
             style={styles.card}
             onClick={() => setSelected(nft)}
+            data-testid={`nft-card-${nft.id}`}
           >
             <img
               src={nft.image}
@@ -96,7 +109,7 @@ function Gallery() {
 
       {/* NFT Detail Modal */}
       {selected && (
-        <div style={styles.modal}>
+        <div style={styles.modal} data-testid="nft-modal">
           <div style={styles.modalContent}>
             <img
               src={selected.image}
@@ -175,11 +188,6 @@ const styles = {
     color: '#7c3aed',
     fontSize: '11px',
   },
-  loading: {
-    textAlign: 'center',
-    color: '#888888',
-    padding: '40px',
-  },
   empty: {
     textAlign: 'center',
     padding: '40px',
@@ -246,4 +254,5 @@ const styles = {
   },
 };
 
+export { NFTCardSkeleton };
 export default Gallery;
